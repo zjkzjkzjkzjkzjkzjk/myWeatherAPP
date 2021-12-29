@@ -2,14 +2,14 @@
 
 Weather::Weather(QObject *parent) : QObject(parent)
 {
-    manager = new QNetworkAccessManager(this);  //新建QNetworkAccessManager对象
-    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(replyFinished(QNetworkReply*)));//关联信号和槽
+    manager = new QNetworkAccessManager(this);
+    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(replyFinished(QNetworkReply*)));
 }
 
 Weather::Weather(QString cityName)
 {
-    manager = new QNetworkAccessManager(this);  //新建QNetworkAccessManager对象
-    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(replyFinished(QNetworkReply*)));//关联信号和槽
+    manager = new QNetworkAccessManager(this);
+    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(replyFinished(QNetworkReply*)));
     this->cityName=cityName;
     refresh();
 }
@@ -73,7 +73,7 @@ void Weather::refresh()
     this->weather_type.clear();
     this->allinfo.clear();
     queryWeather();
-    dataMap.clear();//刷新的清空，待获取时在加载
+    dataMap.clear();
 }
 
 QMap<QString, QMap<QString, QString> > Weather::getDataMap(bool *ok)
@@ -90,7 +90,7 @@ QMap<QString, QMap<QString, QString> > Weather::getDataMap(bool *ok)
     if(!this->isGetData)
         return this->dataMap;
     QJsonParseError err;
-    QJsonDocument json_recv = QJsonDocument::fromJson(allinfo.toUtf8(),&err);//解析json对象
+    QJsonDocument json_recv = QJsonDocument::fromJson(allinfo.toUtf8(),&err);
     qDebug() <<"Json-Error:"<< err.error;
     if(!json_recv.isNull())
     {
@@ -98,11 +98,11 @@ QMap<QString, QMap<QString, QString> > Weather::getDataMap(bool *ok)
 
         if(object.contains("data"))
         {
-            QJsonValue value = object.value("data");  // 获取指定 key 对应的 value
+            QJsonValue value = object.value("data");
             if(value.isObject())
             {
                 QJsonObject object_data = value.toObject();
-                if(object_data.contains("yesterday")&&object_data.contains("forecast"))//若存在昨天及预测天气则加载所有数据
+                if(object_data.contains("yesterday")&&object_data.contains("forecast"))
                 {
                     QJsonValue value=object_data.value("yesterday");
                     if(value.isObject())
@@ -160,7 +160,6 @@ void Weather::print_Debug_allinfoMap()
     foreach (QString key, dataMap.keys()) {
         str="date"+key+"[";
         foreach (QString key1, dataMap.value(key).keys()) {
-//            qDebug()<<key1<<dataMap.value(key).value(key1);
             str+=key1+':'+dataMap.value(key).value(key1)+' ';
         }
         str+=']';
@@ -174,17 +173,16 @@ void Weather::replyFinished(QNetworkReply *reply)
     this->isGetData=false;
     qDebug()<<"recv weather data!!";
     allinfo = reply->readAll();
-//    ui->textEdit->setText(all); //将接收到的数据显示出来
 
     QJsonParseError err;
-    QJsonDocument json_recv = QJsonDocument::fromJson(allinfo.toUtf8(),&err);//解析json对象
+    QJsonDocument json_recv = QJsonDocument::fromJson(allinfo.toUtf8(),&err);
     qDebug() <<"Json-Error:"<< err.error;
     if(!json_recv.isNull())
     {
         QJsonObject object = json_recv.object();
         if(object.contains("data"))
         {
-            QJsonValue value = object.value("data");  // 获取指定 key 对应的 value
+            QJsonValue value = object.value("data");
             if(value.isObject())
             {
                 QJsonObject object_data = value.toObject();
@@ -207,9 +205,6 @@ void Weather::replyFinished(QNetworkReply *reply)
                         strength.remove(0,8);
                         strength.remove(strength.length()-2,2);
                         fengli = today_weather.value("fengxiang").toString() + strength;
-//                        ui->type->setText(weather_type); //显示天气类型
-//                        ui->wendu->setText(wendu);   //显示温度
-//                        ui->fengli->setText(fengli); //显示风力
                         this->isGetData=true;
                     }
                 }
@@ -220,7 +215,7 @@ void Weather::replyFinished(QNetworkReply *reply)
     {
         qDebug()<<"json_recv is NULL or is not a object !!";
     }
-    reply->deleteLater(); //销毁请求对象
+    reply->deleteLater();
     if(isGetData)
     {
         qDebug()<<QString::fromLocal8Bit("获取天气成功");
@@ -241,6 +236,5 @@ void Weather::queryWeather()
     sprintf(quest_array,"%s%s",quest_array,cityName.toUtf8().data());
     quest.setUrl(QUrl(quest_array));
     quest.setHeader(QNetworkRequest::UserAgentHeader,"RT-Thread ART");
-    /*发送get网络请求*/
     manager->get(quest);
 }

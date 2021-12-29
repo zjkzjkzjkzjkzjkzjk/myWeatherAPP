@@ -1,8 +1,4 @@
-﻿/*
- * 天气获取类
- */
-
-#ifndef WEATHER_H
+﻿#ifndef WEATHER_H
 #define WEATHER_H
 
 #include <QObject>
@@ -52,7 +48,6 @@ private:
     QString cityName;
     QNetworkAccessManager *manager;  //请求句柄
     QString allinfo;       //所有信息
-    //以下皆是当天，未来几天的数据框通过获取日期的数据列表
     QString date;//当前日期
     QString fengli;       //风力
     QString wendu;        //温度
