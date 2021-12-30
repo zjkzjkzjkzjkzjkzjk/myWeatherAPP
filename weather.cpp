@@ -228,7 +228,6 @@ void Weather::replyFinished(QNetworkReply *reply)
     }
     emit this->getDataFinisedSignal();
 }
-
 void Weather::queryWeather()
 {
     char quest_array[256]="http://wthrcdn.etouch.cn/weather_mini?city=";
